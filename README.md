@@ -1,5 +1,7 @@
 # 🏃‍♂️ 跑酷幻影遊戲 | Parkour Phantom Game
 
+🎮 **[立即遊玩 → https://ryanchen0311.github.io/parkour/](https://ryanchen0311.github.io/parkour/)**
+
 一個純 HTML5 跑酷幻影特效遊戲，無需安裝任何依賴，直接開啟瀏覽器即可遊玩。
 
 ## 🎮 遊戲功能
