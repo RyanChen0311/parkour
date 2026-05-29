@@ -19,3 +19,16 @@ export function darkenColor(color, amount = 0.3) {
   const newB = Math.round(b * (1 - amount));
   return `rgb(${newR}, ${newG}, ${newB})`;
 }
+
+export function getCharacterSize(windowWidth) {
+  return windowWidth <= 480 ? 50 : 60;
+}
+
+export function clampPosition(posX, posY, containerWidth, containerHeight, characterSize) {
+  const maxX = containerWidth - characterSize;
+  const maxY = containerHeight - characterSize;
+  return {
+    x: Math.max(0, Math.min(maxX, posX)),
+    y: Math.max(0, Math.min(maxY, posY)),
+  };
+}

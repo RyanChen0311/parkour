@@ -388,7 +388,7 @@
   </div>
 
   <script type="module">
-    import { lightenColor, darkenColor } from './src/utils.js';
+    import { lightenColor, darkenColor, getCharacterSize, clampPosition } from './src/utils.js';
 
     const classData = {
       archer: { emoji: '🏹', name: '弓箭手', defaultColor: '#228B22' },
@@ -498,11 +498,8 @@
 
     function updatePosition() {
       const containerRect = container.getBoundingClientRect();
-      const characterSize = window.innerWidth <= 480 ? 50 : 60;
-      const maxX = containerRect.width - characterSize;
-      const maxY = containerRect.height - characterSize;
-      posX = Math.max(0, Math.min(maxX, posX));
-      posY = Math.max(0, Math.min(maxY, posY));
+      const characterSize = getCharacterSize(window.innerWidth);
+      ({ x: posX, y: posY } = clampPosition(posX, posY, containerRect.width, containerRect.height, characterSize));
       character.style.left = `${posX}px`;
       character.style.top = `${posY}px`;
       const currentTime = Date.now();
@@ -556,14 +553,11 @@
       if (!isDragging) return;
       e.preventDefault();
       const pos = getEventPos(e);
-      const characterSize = window.innerWidth <= 480 ? 50 : 60;
+      const characterSize = getCharacterSize(window.innerWidth);
+      const containerRect = container.getBoundingClientRect();
       posX = pos.x - dragOffset.x;
       posY = pos.y - dragOffset.y;
-      const containerRect = container.getBoundingClientRect();
-      const maxX = containerRect.width - characterSize;
-      const maxY = containerRect.height - characterSize;
-      posX = Math.max(0, Math.min(maxX, posX));
-      posY = Math.max(0, Math.min(maxY, posY));
+      ({ x: posX, y: posY } = clampPosition(posX, posY, containerRect.width, containerRect.height, characterSize));
       updatePosition();
     }
 
@@ -603,7 +597,7 @@
     function autoMove() {
       if (!isAutoMoving) return;
       const containerRect = container.getBoundingClientRect();
-      const characterSize = window.innerWidth <= 480 ? 50 : 60;
+      const characterSize = getCharacterSize(window.innerWidth);
       const maxX = containerRect.width - characterSize;
       const maxY = containerRect.height - characterSize;
       posX += autoMoveDirection.x * 4;
@@ -642,7 +636,7 @@
 
     resetBtn.addEventListener('click', () => {
       const containerRect = container.getBoundingClientRect();
-      const characterSize = window.innerWidth <= 480 ? 50 : 60;
+      const characterSize = getCharacterSize(window.innerWidth);
       posX = (containerRect.width - characterSize) / 2;
       posY = (containerRect.height - characterSize) / 2;
       isAutoMoving = false;
@@ -668,9 +662,8 @@
 
     window.addEventListener('resize', () => {
       const containerRect = container.getBoundingClientRect();
-      const characterSize = window.innerWidth <= 480 ? 50 : 60;
-      posX = Math.min(posX, containerRect.width - characterSize);
-      posY = Math.min(posY, containerRect.height - characterSize);
+      const characterSize = getCharacterSize(window.innerWidth);
+      ({ x: posX, y: posY } = clampPosition(posX, posY, containerRect.width, containerRect.height, characterSize));
       updatePosition();
     });
 
@@ -688,9 +681,8 @@
     window.addEventListener('orientationchange', () => {
       setTimeout(() => {
         const containerRect = container.getBoundingClientRect();
-        const characterSize = window.innerWidth <= 480 ? 50 : 60;
-        posX = Math.min(posX, containerRect.width - characterSize);
-        posY = Math.min(posY, containerRect.height - characterSize);
+        const characterSize = getCharacterSize(window.innerWidth);
+        ({ x: posX, y: posY } = clampPosition(posX, posY, containerRect.width, containerRect.height, characterSize));
         updatePosition();
       }, 500);
     });
