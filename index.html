@@ -23,8 +23,8 @@
     }
 
     body {
-      background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
-      color: white;
+      background: #ffffff;
+      color: #1a1a2e;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       display: flex;
       flex-direction: column;
@@ -47,11 +47,6 @@
 
     .title {
       font-size: 2rem;
-      text-shadow: 3px 3px 6px rgba(0,0,0,0.7);
-      background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      animation: shimmer 3s ease-in-out infinite alternate;
     }
 
     .controls {
@@ -62,11 +57,11 @@
       justify-content: center;
     }
 
-    select, button, input[type="color"] {
+    select, button {
       padding: 10px 15px;
       border: none;
       border-radius: 8px;
-      background: rgba(255,255,255,0.15);
+      background: #1a1a2e;
       color: white;
       cursor: pointer;
       transition: all 0.3s ease;
@@ -79,7 +74,7 @@
       appearance: none;
       width: 120px;
       height: 40px;
-      background: rgba(255,255,255,0.15);
+      background: #1a1a2e;
       border-radius: 8px;
       padding: 0 12px;
       cursor: pointer;
@@ -87,7 +82,7 @@
     }
 
     input[type="range"]:hover {
-      background: rgba(255,255,255,0.25);
+      background: #2d2d5e;
     }
 
     input[type="range"]::-webkit-slider-runnable-track {
@@ -121,10 +116,10 @@
       cursor: pointer;
     }
 
-    select:hover, button:hover, input[type="color"]:hover {
-      background: rgba(255,255,255,0.25);
+    select:hover, button:hover {
+      background: #2d2d5e;
       transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.15);
     }
 
     button:active {
@@ -135,7 +130,7 @@
       position: relative;
       width: 700px;
       height: 450px;
-      border: 3px solid rgba(255,255,255,0.4);
+      border: 3px solid rgba(0,0,0,0.15);
       border-radius: 15px;
       overflow: hidden;
       background: linear-gradient(to right,
@@ -261,7 +256,7 @@
 </head>
 <body>
   <div class="header">
-    <h1 class="title">🏃‍♂️ 跑酷幻影</h1>
+    <h1 class="title">🏃‍♂️</h1>
   </div>
 
   <div class="game-container">
@@ -279,7 +274,7 @@
       <option value="assassin">🗡️ 刺客</option>
     </select>
     <input type="range" id="speedControl" min="2" max="12" value="6">
-    <button id="autoMoveBtn">🎮 自動移動</button>
+    <button id="autoMoveBtn">🏃 開始跑酷</button>
     <button id="autoClassBtn">🎲 隨機職業</button>
     <button id="resetBtn">💥 砍掉重練</button>
   </div>
@@ -459,7 +454,7 @@
     function stopAutoMovement() {
       if (isAutoMoving) {
         isAutoMoving = false;
-        autoMoveBtn.textContent = '🎮 自動移動';
+        autoMoveBtn.textContent = '🏃 開始跑酷';
       }
     }
 
@@ -563,7 +558,7 @@
 
     autoMoveBtn.addEventListener('click', () => {
       isAutoMoving = !isAutoMoving;
-      autoMoveBtn.textContent = isAutoMoving ? '⏸️ 停止移動' : '🎮 自動移動';
+      autoMoveBtn.textContent = isAutoMoving ? '⏸️ 停止跑酷' : '🏃 開始跑酷';
       if (isAutoMoving) {
         autoMoveDirection.x = Math.random() > 0.5 ? 1 : -1;
         autoMoveDirection.y = (Math.random() - 0.5) * 2;
@@ -605,7 +600,7 @@
       isAutoMoving = false;
       isAutoClassChanging = false;
       isDragging = false;
-      autoMoveBtn.textContent = '🎮 自動移動';
+      autoMoveBtn.textContent = '🏃 開始跑酷';
       autoClassBtn.textContent = '🎲 隨機職業';
       character.classList.remove('dragging');
       classColors = { archer: '#228B22', mage: '#4169E1', swordsman: '#DC143C', assassin: '#9370DB' };
