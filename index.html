@@ -256,7 +256,7 @@
     </div>
     <button id="autoMoveBtn">🎮 自動移動</button>
     <button id="autoClassBtn">🎲 隨機職業</button>
-    <button id="resetBtn">🔄 重置</button>
+    <button id="resetBtn">💥 砍掉重練</button>
   </div>
 
   <script>
@@ -527,8 +527,16 @@
       if (isAutoMoving) {
         autoMoveDirection.x = Math.random() > 0.5 ? 1 : -1;
         autoMoveDirection.y = (Math.random() - 0.5) * 2;
+        autoColorLoop();
       }
     });
+
+    function autoColorLoop() {
+      if (!isAutoMoving) return;
+      classColors[currentClass] = randomHexColor();
+      updateCharacter();
+      setTimeout(autoColorLoop, 1500);
+    }
 
     autoClassBtn.addEventListener('click', () => {
       isAutoClassChanging = !isAutoClassChanging;
@@ -558,7 +566,7 @@
       isAutoClassChanging = false;
       isDragging = false;
       autoMoveBtn.textContent = '🎮 自動移動';
-      autoClassBtn.textContent = '🎲 自動選擇職業';
+      autoClassBtn.textContent = '🎲 隨機職業';
       character.classList.remove('dragging');
       classColors = { archer: '#228B22', mage: '#4169E1', swordsman: '#DC143C', assassin: '#9370DB' };
       currentClass = 'archer';
