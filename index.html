@@ -74,38 +74,51 @@
       font-weight: 500;
     }
 
-    input[type="color"] {
-      width: 44px;
-      padding: 6px 4px;
-    }
-
-    .speed-group {
-      display: flex;
-      align-items: center;
+    input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 120px;
+      height: 40px;
       background: rgba(255,255,255,0.15);
       border-radius: 8px;
-      overflow: hidden;
+      padding: 0 12px;
+      cursor: pointer;
+      transition: background 0.3s ease;
     }
 
-    .speed-group button {
-      padding: 10px 12px;
-      border-radius: 0;
-      font-size: 16px;
-      line-height: 1;
+    input[type="range"]:hover {
+      background: rgba(255,255,255,0.25);
     }
 
-    .speed-group button:hover {
-      background: rgba(255,255,255,0.3);
-      transform: none;
-      box-shadow: none;
+    input[type="range"]::-webkit-slider-runnable-track {
+      height: 4px;
+      background: rgba(255,255,255,0.4);
+      border-radius: 2px;
     }
 
-    #speedDisplay {
-      padding: 0 10px;
-      font-size: 14px;
-      font-weight: bold;
-      min-width: 24px;
-      text-align: center;
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: white;
+      margin-top: -6px;
+      cursor: pointer;
+    }
+
+    input[type="range"]::-moz-range-track {
+      height: 4px;
+      background: rgba(255,255,255,0.4);
+      border-radius: 2px;
+    }
+
+    input[type="range"]::-moz-range-thumb {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: white;
+      border: none;
+      cursor: pointer;
     }
 
     select:hover, button:hover, input[type="color"]:hover {
@@ -252,7 +265,7 @@
   <div class="game-container">
     <div id="character-container">
       <div id="character" class="character archer">🏹</div>
-      <div class="touch-hint" id="touchHint">📱 拖曳角色 或 WASD 移動</div>
+      <div class="touch-hint" id="touchHint">📱 拖曳角色移動 · 滑動背景換色</div>
     </div>
   </div>
 
@@ -263,12 +276,7 @@
       <option value="swordsman">⚔️ 劍士</option>
       <option value="assassin">🗡️ 刺客</option>
     </select>
-    <input type="color" id="colorPicker" value="#228B22">
-    <div class="speed-group">
-      <button id="speedDown">−</button>
-      <span id="speedDisplay">6</span>
-      <button id="speedUp">+</button>
-    </div>
+    <input type="range" id="speedControl" min="2" max="12" value="6">
     <button id="autoMoveBtn">🎮 自動移動</button>
     <button id="autoClassBtn">🎲 隨機職業</button>
     <button id="resetBtn">💥 砍掉重練</button>
@@ -301,6 +309,14 @@
       return '#' + Math.floor(Math.random() * 0xFFFFFF).toString(16).padStart(6, '0');
     }
 
+    function hslToHex(h, s, l) {
+      s /= 100; l /= 100;
+      const k = n => (n + h / 30) % 12;
+      const a = s * Math.min(l, 1 - l);
+      const f = n => l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
+      return '#' + [f(0), f(8), f(4)].map(x => Math.round(x * 255).toString(16).padStart(2, '0')).join('');
+    }
+
     function getCharacterSize(windowWidth) {
       return windowWidth <= 480 ? 50 : 60;
     }
@@ -329,9 +345,7 @@
     const autoClassBtn = document.getElementById('autoClassBtn');
     const resetBtn = document.getElementById('resetBtn');
     const touchHint = document.getElementById('touchHint');
-    const speedDown = document.getElementById('speedDown');
-    const speedUp = document.getElementById('speedUp');
-    const speedDisplay = document.getElementById('speedDisplay');
+    const speedControl = document.getElementById('speedControl');
 
     let posX = 320;
     let posY = 195;
@@ -351,6 +365,7 @@
     let lastMoveTime = 0;
 
     let isDragging = false;
+    let isMouseDown = false;
     let dragOffset = { x: 0, y: 0 };
     let touchStartTime = 0;
     let hasInteracted = false;
@@ -387,18 +402,12 @@
       character.style.background = `radial-gradient(circle, ${color}, ${darkColor})`;
       character.style.color = lightColor;
       character.style.boxShadow = `0 0 20px ${color}`;
-      colorPicker.value = color;
       currentColor = color;
       document.title = `🏃‍♂️ 跑酷幻影遊戲 - ${classData[currentClass].name}`;
     }
 
     select.addEventListener('change', () => {
       currentClass = select.value;
-      updateCharacter();
-    });
-
-    colorPicker.addEventListener('input', (e) => {
-      classColors[currentClass] = e.target.value;
       updateCharacter();
     });
 
@@ -453,6 +462,7 @@
     }
 
     function handleTouchStart(e) {
+      if (e.type === 'mousedown') isMouseDown = true;
       e.preventDefault();
       const pos = getEventPos(e);
       const characterRect = character.getBoundingClientRect();
@@ -477,18 +487,29 @@
     }
 
     function handleTouchMove(e) {
-      if (!isDragging) return;
-      e.preventDefault();
-      const pos = getEventPos(e);
-      const characterSize = getCharacterSize(window.innerWidth);
-      const containerRect = container.getBoundingClientRect();
-      posX = pos.x - dragOffset.x;
-      posY = pos.y - dragOffset.y;
-      ({ x: posX, y: posY } = clampPosition(posX, posY, containerRect.width, containerRect.height, characterSize));
-      updatePosition();
+      const isTouch = e.type === 'touchmove';
+      if (isDragging) {
+        e.preventDefault();
+        const pos = getEventPos(e);
+        const characterSize = getCharacterSize(window.innerWidth);
+        const containerRect = container.getBoundingClientRect();
+        posX = pos.x - dragOffset.x;
+        posY = pos.y - dragOffset.y;
+        ({ x: posX, y: posY } = clampPosition(posX, posY, containerRect.width, containerRect.height, characterSize));
+        updatePosition();
+      } else if (isTouch || isMouseDown) {
+        e.preventDefault();
+        const pos = getEventPos(e);
+        const containerRect = container.getBoundingClientRect();
+        const hue = Math.round((pos.x / containerRect.width) * 360);
+        classColors[currentClass] = hslToHex(hue, 80, 55);
+        updateCharacter();
+        hideTouchHint();
+      }
     }
 
     function handleTouchEnd(e) {
+      if (e.type === 'mouseup' || e.type === 'mouseleave') isMouseDown = false;
       if (!isDragging) return;
       e.preventDefault();
       isDragging = false;
@@ -521,12 +542,8 @@
       keys[e.key.toLowerCase()] = false;
     });
 
-    speedDown.addEventListener('click', () => {
-      if (moveSpeed > 2) { moveSpeed--; speedDisplay.textContent = moveSpeed; }
-    });
-
-    speedUp.addEventListener('click', () => {
-      if (moveSpeed < 12) { moveSpeed++; speedDisplay.textContent = moveSpeed; }
+    speedControl.addEventListener('input', () => {
+      moveSpeed = parseInt(speedControl.value);
     });
 
     function autoMove() {
@@ -593,7 +610,7 @@
       currentClass = 'archer';
       select.value = currentClass;
       moveSpeed = 6;
-      speedDisplay.textContent = 6;
+      speedControl.value = 6;
       updateCharacter();
       updatePosition();
       container.querySelectorAll('.afterimage').forEach(img => {
