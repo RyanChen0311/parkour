@@ -62,17 +62,6 @@
       justify-content: center;
     }
 
-    .control-group {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .control-group label {
-      font-size: 13px;
-      opacity: 0.7;
-    }
-
     select, button, input[type="color"] {
       padding: 10px 15px;
       border: none;
@@ -86,10 +75,8 @@
     }
 
     input[type="color"] {
-      width: 50px;
-      height: 45px;
-      padding: 3px;
-      border: 2px solid rgba(255,255,255,0.3);
+      width: 52px;
+      padding: 6px 8px;
     }
 
     select:hover, button:hover, input[type="color"]:hover {
@@ -241,21 +228,13 @@
   </div>
 
   <div class="controls">
-    <div class="control-group">
-      <label for="classSelect">職業</label>
-      <select id="classSelect">
-        <option value="archer">🏹 弓箭手</option>
-        <option value="mage">🔮 法師</option>
-        <option value="swordsman">⚔️ 劍士</option>
-        <option value="assassin">🗡️ 刺客</option>
-      </select>
-    </div>
-
-    <div class="control-group">
-      <label for="colorPicker">顏色</label>
-      <input type="color" id="colorPicker" value="#228B22">
-    </div>
-
+    <select id="classSelect">
+      <option value="archer">🏹 弓箭手</option>
+      <option value="mage">🔮 法師</option>
+      <option value="swordsman">⚔️ 劍士</option>
+      <option value="assassin">🗡️ 刺客</option>
+    </select>
+    <input type="color" id="colorPicker" value="#228B22">
     <button id="autoMoveBtn">🎮 自動移動</button>
     <button id="autoClassBtn">🎲 隨機職業</button>
     <button id="resetBtn">🔄 重置</button>
