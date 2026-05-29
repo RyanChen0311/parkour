@@ -29,13 +29,13 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 20px;
+      justify-content: center;
+      padding: 16px;
       margin: 0;
       min-height: 100vh;
       overflow-x: hidden;
+      gap: 16px;
       -webkit-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
       user-select: none;
       -webkit-touch-callout: none;
       -webkit-tap-highlight-color: transparent;
@@ -43,43 +43,23 @@
 
     .header {
       text-align: center;
-      margin-bottom: 30px;
-      animation: fadeInDown 1s ease-out;
     }
 
     .title {
-      font-size: 3rem;
+      font-size: 2rem;
       text-shadow: 3px 3px 6px rgba(0,0,0,0.7);
-      margin-bottom: 10px;
       background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       animation: shimmer 3s ease-in-out infinite alternate;
     }
 
-    .subtitle {
-      font-size: 1.2rem;
-      opacity: 0.8;
-      margin-bottom: 20px;
-    }
-
-    .game-info {
-      background: rgba(255,255,255,0.1);
-      padding: 15px;
-      border-radius: 10px;
-      margin-bottom: 20px;
-      border: 1px solid rgba(255,255,255,0.2);
-      backdrop-filter: blur(10px);
-    }
-
     .controls {
       display: flex;
       flex-wrap: wrap;
-      gap: 15px;
-      margin-bottom: 30px;
+      gap: 10px;
       align-items: center;
       justify-content: center;
-      animation: fadeInUp 1s ease-out 0.3s both;
     }
 
     .control-group {
@@ -119,10 +99,6 @@
 
     button:active {
       transform: translateY(0);
-    }
-
-    .game-container {
-      animation: fadeIn 1s ease-out 0.6s both;
     }
 
     #character-container {
@@ -199,50 +175,6 @@
       50% { opacity: 0.9; transform: translate(-50%, -50%) scale(1.05); }
     }
 
-    .instructions {
-      margin-top: 30px;
-      text-align: center;
-      animation: fadeInUp 1s ease-out 0.9s both;
-    }
-
-    .instruction-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 20px;
-      max-width: 800px;
-      margin-top: 20px;
-    }
-
-    .instruction-card {
-      background: rgba(255,255,255,0.1);
-      padding: 20px;
-      border-radius: 12px;
-      border: 1px solid rgba(255,255,255,0.2);
-      backdrop-filter: blur(10px);
-    }
-
-    .instruction-card h3 {
-      margin-bottom: 10px;
-      color: #4ecdc4;
-    }
-
-    .keyboard-hint {
-      display: inline-block;
-      background: rgba(255,255,255,0.2);
-      padding: 5px 10px;
-      border-radius: 5px;
-      margin: 2px;
-      font-family: monospace;
-      font-weight: bold;
-    }
-
-    .footer {
-      margin-top: 40px;
-      text-align: center;
-      opacity: 0.7;
-      font-size: 0.9rem;
-    }
-
     @keyframes fadeInDown {
       from { opacity: 0; transform: translateY(-30px); }
       to { opacity: 1; transform: translateY(0); }
@@ -264,17 +196,13 @@
     }
 
     @media (max-width: 768px) {
-      .title { font-size: 2rem; }
+      .title { font-size: 1.5rem; }
       .controls { flex-direction: column; align-items: stretch; }
       .control-group { justify-content: center; }
       #character-container {
         width: 90vw;
         max-width: 500px;
         height: 300px;
-      }
-      .instruction-grid {
-        grid-template-columns: 1fr;
-        gap: 15px;
       }
       .touch-hint {
         font-size: 12px;
@@ -283,9 +211,8 @@
     }
 
     @media (max-width: 480px) {
-      body { padding: 10px; }
-      .title { font-size: 1.5rem; }
-      .controls { gap: 10px; }
+      body { padding: 10px; gap: 12px; }
+      .title { font-size: 1.2rem; }
       select, button { padding: 8px 12px; }
       #character-container { height: 250px; }
       .character, .afterimage {
@@ -302,16 +229,19 @@
 </head>
 <body>
   <div class="header">
-    <h1 class="title">🏃‍♂️ 跑酷幻影遊戲</h1>
-    <p class="subtitle">體驗炫酷的跑酷幻影特效！</p>
-    <div class="game-info">
-      <p>✨ 支援 4 種職業角色 | 🎨 自訂專屬顏色 | ⚡ 流暢鍵盤/觸控控制 | 💫 炫酷殘影效果</p>
+    <h1 class="title">🏃‍♂️ 跑酷幻影</h1>
+  </div>
+
+  <div class="game-container">
+    <div id="character-container">
+      <div id="character" class="character archer">🏹</div>
+      <div class="touch-hint" id="touchHint">📱 拖曳角色 或 WASD 移動</div>
     </div>
   </div>
 
   <div class="controls">
     <div class="control-group">
-      <label for="classSelect">🎭 職業：</label>
+      <label for="classSelect">職業</label>
       <select id="classSelect">
         <option value="archer">🏹 弓箭手</option>
         <option value="mage">🔮 法師</option>
@@ -321,70 +251,13 @@
     </div>
 
     <div class="control-group">
-      <label for="colorPicker">🎨 顏色：</label>
+      <label for="colorPicker">顏色</label>
       <input type="color" id="colorPicker" value="#228B22">
     </div>
 
     <button id="autoMoveBtn">🎮 自動移動</button>
-    <button id="autoClassBtn">🎲 自動選擇職業</button>
+    <button id="autoClassBtn">🎲 隨機職業</button>
     <button id="resetBtn">🔄 重置</button>
-  </div>
-
-  <div class="game-container">
-    <div id="character-container">
-      <div id="character" class="character archer">🏹</div>
-      <div class="touch-hint" id="touchHint">📱 觸摸拖曳或使用 WASD/方向鍵控制</div>
-    </div>
-  </div>
-
-  <div class="instructions">
-    <h2>🎮 遊戲說明</h2>
-    <div class="instruction-grid">
-      <div class="instruction-card">
-        <h3>🕹️ 控制方式</h3>
-        <p><strong>鍵盤控制：</strong></p>
-        <div style="margin-top: 10px;">
-          <span class="keyboard-hint">W</span>
-          <span class="keyboard-hint">A</span>
-          <span class="keyboard-hint">S</span>
-          <span class="keyboard-hint">D</span>
-          或方向鍵
-        </div>
-        <p style="margin-top: 15px;"><strong>觸控控制：</strong></p>
-        <p>📱 直接觸摸螢幕拖曳角色移動</p>
-        <p>支援多方向同時移動！</p>
-      </div>
-
-      <div class="instruction-card">
-        <h3>🎭 職業系統</h3>
-        <p>🏹 <strong>弓箭手</strong> - 敏捷射手</p>
-        <p>🔮 <strong>法師</strong> - 神秘施法者</p>
-        <p>⚔️ <strong>劍士</strong> - 勇猛戰士</p>
-        <p>🗡️ <strong>刺客</strong> - 暗影殺手</p>
-      </div>
-
-      <div class="instruction-card">
-        <h3>🎨 自訂功能</h3>
-        <p>• 每個職業都可以設定專屬顏色</p>
-        <p>• 殘影效果會跟隨顏色變化</p>
-        <p>• 自動移動和職業切換</p>
-        <p>• 一鍵重置所有設定</p>
-      </div>
-
-      <div class="instruction-card">
-        <h3>💫 特殊效果</h3>
-        <p>• 炫酷的殘影拖尾效果</p>
-        <p>• 動態光暈和陰影</p>
-        <p>• 流暢的移動動畫</p>
-        <p>• 響應式遊戲界面</p>
-        <p>• 觸控拖曳回饋效果</p>
-      </div>
-    </div>
-  </div>
-
-  <div class="footer">
-    <p>🌟 享受遊戲樂趣！分享給朋友一起體驗吧！</p>
-    <p style="margin-top: 10px;">💡 提示：在全螢幕模式下體驗更佳</p>
   </div>
 
   <script>
