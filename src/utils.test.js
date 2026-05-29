@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { lightenColor, darkenColor } from './utils.js';
+import { lightenColor, darkenColor, getCharacterSize, clampPosition } from './utils.js';
 
 describe('lightenColor', () => {
   it('回傳格式為 rgb(...)', () => {
@@ -71,5 +71,55 @@ describe('darkenColor', () => {
     expect(() => darkenColor('#4169E1')).not.toThrow(); // mage
     expect(() => darkenColor('#DC143C')).not.toThrow(); // swordsman
     expect(() => darkenColor('#9370DB')).not.toThrow(); // assassin
+  });
+});
+
+describe('getCharacterSize', () => {
+  it('視窗寬度大於 480 時回傳 60', () => {
+    expect(getCharacterSize(481)).toBe(60);
+    expect(getCharacterSize(768)).toBe(60);
+    expect(getCharacterSize(1920)).toBe(60);
+  });
+
+  it('視窗寬度等於 480 時回傳 50（手機臨界點）', () => {
+    expect(getCharacterSize(480)).toBe(50);
+  });
+
+  it('視窗寬度小於 480 時回傳 50', () => {
+    expect(getCharacterSize(375)).toBe(50);
+    expect(getCharacterSize(320)).toBe(50);
+  });
+});
+
+describe('clampPosition', () => {
+  it('正常位置不被改變', () => {
+    const result = clampPosition(100, 100, 800, 600, 60);
+    expect(result).toEqual({ x: 100, y: 100 });
+  });
+
+  it('超出右側邊界時夾緊到 containerWidth - characterSize', () => {
+    const result = clampPosition(900, 100, 800, 600, 60);
+    expect(result.x).toBe(740); // 800 - 60
+  });
+
+  it('超出下方邊界時夾緊到 containerHeight - characterSize', () => {
+    const result = clampPosition(100, 700, 800, 600, 60);
+    expect(result.y).toBe(540); // 600 - 60
+  });
+
+  it('負值時夾緊到 0', () => {
+    const result = clampPosition(-10, -5, 800, 600, 60);
+    expect(result).toEqual({ x: 0, y: 0 });
+  });
+
+  it('剛好在邊界上不被改變', () => {
+    // maxX = 800 - 60 = 740, maxY = 600 - 60 = 540
+    const result = clampPosition(740, 540, 800, 600, 60);
+    expect(result).toEqual({ x: 740, y: 540 });
+  });
+
+  it('手機尺寸（characterSize=50）的邊界計算正確', () => {
+    const result = clampPosition(999, 999, 375, 667, 50);
+    expect(result).toEqual({ x: 325, y: 617 }); // 375-50, 667-50
   });
 });
