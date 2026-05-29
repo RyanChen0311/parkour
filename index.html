@@ -141,11 +141,6 @@
       box-shadow: 0 0 30px rgba(0,0,0,0.5);
       backdrop-filter: blur(10px);
       touch-action: none;
-      cursor: grab;
-    }
-
-    #character-container:active {
-      cursor: grabbing;
     }
 
     .character, .afterimage {
@@ -480,6 +475,7 @@
         touchStartTime = Date.now();
         stopAutoMovement();
         hideTouchHint();
+        if (e.type === 'mousedown') container.style.cursor = 'grabbing';
       }
     }
 
@@ -503,6 +499,16 @@
         updateCharacter();
         hideTouchHint();
       }
+      if (!isTouch && !isDragging) {
+        const pos = getEventPos(e);
+        const characterRect = character.getBoundingClientRect();
+        const containerRect = container.getBoundingClientRect();
+        const charCX = characterRect.left - containerRect.left + characterRect.width / 2;
+        const charCY = characterRect.top - containerRect.top + characterRect.height / 2;
+        const dist = Math.sqrt(Math.pow(pos.x - charCX, 2) + Math.pow(pos.y - charCY, 2));
+        const characterSize = window.innerWidth <= 480 ? 50 : 60;
+        container.style.cursor = dist <= characterSize * 0.8 ? 'grab' : CRAYON_CURSOR;
+      }
     }
 
     function handleTouchEnd(e) {
@@ -511,6 +517,7 @@
       e.preventDefault();
       isDragging = false;
       character.classList.remove('dragging');
+      if (e.type === 'mouseup' || e.type === 'mouseleave') container.style.cursor = CRAYON_CURSOR;
       const touchDuration = Date.now() - touchStartTime;
       if (touchDuration < 200) {
         character.style.transform = 'scale(1.2)';
@@ -555,6 +562,16 @@
       if (posY >= maxY || posY <= 0) autoMoveDirection.y *= -1;
       updatePosition();
     }
+
+    const CRAYON_CURSOR = (() => {
+      const svg = encodeURIComponent(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">` +
+        `<path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z" fill="#555"/>` +
+        `<path d="M20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="#555"/>` +
+        `</svg>`
+      );
+      return `url("data:image/svg+xml,${svg}") 3 21, crosshair`;
+    })();
 
     const RAINBOW_BG = `linear-gradient(to right,
       hsl(0,80%,35%), hsl(45,80%,35%), hsl(90,80%,35%),
@@ -610,6 +627,7 @@
       isAutoClassChanging = false;
       isDragging = false;
       container.style.background = RAINBOW_BG;
+      container.style.cursor = CRAYON_CURSOR;
       autoMoveBtn.textContent = '🏃 開始跑酷';
       autoClassBtn.textContent = '🎲 隨機職業';
       character.classList.remove('dragging');
@@ -673,6 +691,7 @@
       const characterSize = window.innerWidth <= 480 ? 50 : 60;
       posX = (containerRect.width - characterSize) / 2;
       posY = (containerRect.height - characterSize) / 2;
+      container.style.cursor = CRAYON_CURSOR;
       updatePosition();
       animate();
       setTimeout(() => {
