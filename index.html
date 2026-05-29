@@ -75,8 +75,24 @@
     }
 
     input[type="color"] {
-      width: 52px;
-      padding: 6px 8px;
+      width: 36px;
+      padding: 6px 4px;
+      flex-shrink: 0;
+    }
+
+    .color-speed-group {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 8px;
+      padding: 0 10px 0 6px;
+    }
+
+    input[type="range"] {
+      width: 70px;
+      cursor: pointer;
+      accent-color: rgba(255,255,255,0.9);
     }
 
     select:hover, button:hover, input[type="color"]:hover {
@@ -234,7 +250,10 @@
       <option value="swordsman">⚔️ 劍士</option>
       <option value="assassin">🗡️ 刺客</option>
     </select>
-    <input type="color" id="colorPicker" value="#228B22">
+    <div class="color-speed-group">
+      <input type="color" id="colorPicker" value="#228B22">
+      <input type="range" id="speedControl" min="2" max="12" value="6">
+    </div>
     <button id="autoMoveBtn">🎮 自動移動</button>
     <button id="autoClassBtn">🎲 隨機職業</button>
     <button id="resetBtn">🔄 重置</button>
@@ -261,6 +280,10 @@
       const newG = Math.round(g * (1 - amount));
       const newB = Math.round(b * (1 - amount));
       return `rgb(${newR}, ${newG}, ${newB})`;
+    }
+
+    function randomHexColor() {
+      return '#' + Math.floor(Math.random() * 0xFFFFFF).toString(16).padStart(6, '0');
     }
 
     function getCharacterSize(windowWidth) {
@@ -291,6 +314,7 @@
     const autoClassBtn = document.getElementById('autoClassBtn');
     const resetBtn = document.getElementById('resetBtn');
     const touchHint = document.getElementById('touchHint');
+    const speedControl = document.getElementById('speedControl');
 
     let posX = 320;
     let posY = 195;
@@ -480,14 +504,18 @@
       keys[e.key.toLowerCase()] = false;
     });
 
+    speedControl.addEventListener('input', () => {
+      moveSpeed = parseInt(speedControl.value);
+    });
+
     function autoMove() {
       if (!isAutoMoving) return;
       const containerRect = container.getBoundingClientRect();
       const characterSize = getCharacterSize(window.innerWidth);
       const maxX = containerRect.width - characterSize;
       const maxY = containerRect.height - characterSize;
-      posX += autoMoveDirection.x * 4;
-      posY += autoMoveDirection.y * 3;
+      posX += autoMoveDirection.x * moveSpeed * 0.67;
+      posY += autoMoveDirection.y * moveSpeed * 0.5;
       if (posX >= maxX || posX <= 0) autoMoveDirection.x *= -1;
       if (posY >= maxY || posY <= 0) autoMoveDirection.y *= -1;
       updatePosition();
@@ -514,6 +542,7 @@
       const randomClass = classes[Math.floor(Math.random() * classes.length)];
       if (randomClass !== currentClass) {
         currentClass = randomClass;
+        classColors[currentClass] = randomHexColor();
         select.value = currentClass;
         updateCharacter();
       }
@@ -534,6 +563,8 @@
       classColors = { archer: '#228B22', mage: '#4169E1', swordsman: '#DC143C', assassin: '#9370DB' };
       currentClass = 'archer';
       select.value = currentClass;
+      moveSpeed = 6;
+      speedControl.value = 6;
       updateCharacter();
       updatePosition();
       container.querySelectorAll('.afterimage').forEach(img => {
