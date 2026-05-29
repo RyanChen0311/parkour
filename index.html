@@ -565,6 +565,7 @@
       isAutoMoving = !isAutoMoving;
       autoMoveBtn.textContent = isAutoMoving ? '⏸️ 停止跑酷' : '🏃 開始跑酷';
       if (isAutoMoving) {
+        hideTouchHint();
         container.style.background = '#000000';
         autoMoveDirection.x = Math.random() > 0.5 ? 1 : -1;
         autoMoveDirection.y = (Math.random() - 0.5) * 2;
@@ -584,7 +585,7 @@
     autoClassBtn.addEventListener('click', () => {
       isAutoClassChanging = !isAutoClassChanging;
       autoClassBtn.textContent = isAutoClassChanging ? '⏹️ 停止切換' : '🎲 自動選擇職業';
-      if (isAutoClassChanging) autoChangeClass();
+      if (isAutoClassChanging) { hideTouchHint(); autoChangeClass(); }
     });
 
     function autoChangeClass() {
