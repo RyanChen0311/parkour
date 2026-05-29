@@ -75,24 +75,37 @@
     }
 
     input[type="color"] {
-      width: 36px;
+      width: 44px;
       padding: 6px 4px;
-      flex-shrink: 0;
     }
 
-    .color-speed-group {
+    .speed-group {
       display: flex;
       align-items: center;
-      gap: 4px;
       background: rgba(255,255,255,0.15);
       border-radius: 8px;
-      padding: 0 10px 0 6px;
+      overflow: hidden;
     }
 
-    input[type="range"] {
-      width: 70px;
-      cursor: pointer;
-      accent-color: rgba(255,255,255,0.9);
+    .speed-group button {
+      padding: 10px 12px;
+      border-radius: 0;
+      font-size: 16px;
+      line-height: 1;
+    }
+
+    .speed-group button:hover {
+      background: rgba(255,255,255,0.3);
+      transform: none;
+      box-shadow: none;
+    }
+
+    #speedDisplay {
+      padding: 0 10px;
+      font-size: 14px;
+      font-weight: bold;
+      min-width: 24px;
+      text-align: center;
     }
 
     select:hover, button:hover, input[type="color"]:hover {
@@ -250,9 +263,11 @@
       <option value="swordsman">⚔️ 劍士</option>
       <option value="assassin">🗡️ 刺客</option>
     </select>
-    <div class="color-speed-group">
-      <input type="color" id="colorPicker" value="#228B22">
-      <input type="range" id="speedControl" min="2" max="12" value="6">
+    <input type="color" id="colorPicker" value="#228B22">
+    <div class="speed-group">
+      <button id="speedDown">−</button>
+      <span id="speedDisplay">6</span>
+      <button id="speedUp">+</button>
     </div>
     <button id="autoMoveBtn">🎮 自動移動</button>
     <button id="autoClassBtn">🎲 隨機職業</button>
@@ -314,7 +329,9 @@
     const autoClassBtn = document.getElementById('autoClassBtn');
     const resetBtn = document.getElementById('resetBtn');
     const touchHint = document.getElementById('touchHint');
-    const speedControl = document.getElementById('speedControl');
+    const speedDown = document.getElementById('speedDown');
+    const speedUp = document.getElementById('speedUp');
+    const speedDisplay = document.getElementById('speedDisplay');
 
     let posX = 320;
     let posY = 195;
@@ -504,8 +521,12 @@
       keys[e.key.toLowerCase()] = false;
     });
 
-    speedControl.addEventListener('input', () => {
-      moveSpeed = parseInt(speedControl.value);
+    speedDown.addEventListener('click', () => {
+      if (moveSpeed > 2) { moveSpeed--; speedDisplay.textContent = moveSpeed; }
+    });
+
+    speedUp.addEventListener('click', () => {
+      if (moveSpeed < 12) { moveSpeed++; speedDisplay.textContent = moveSpeed; }
     });
 
     function autoMove() {
@@ -572,7 +593,7 @@
       currentClass = 'archer';
       select.value = currentClass;
       moveSpeed = 6;
-      speedControl.value = 6;
+      speedDisplay.textContent = 6;
       updateCharacter();
       updatePosition();
       container.querySelectorAll('.afterimage').forEach(img => {
