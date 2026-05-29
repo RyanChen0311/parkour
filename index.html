@@ -270,7 +270,7 @@
     </select>
     <input type="range" id="speedControl" min="2" max="12" value="6">
     <button id="autoMoveBtn">🏃 開始跑酷</button>
-    <button id="autoClassBtn">🎲 隨機職業</button>
+    <button id="autoClassBtn">🎲 切換職業</button>
     <button id="resetBtn">💥 砍掉重練</button>
   </div>
 
@@ -585,22 +585,14 @@
         container.style.background = '#000000';
         autoMoveDirection.x = Math.random() > 0.5 ? 1 : -1;
         autoMoveDirection.y = (Math.random() - 0.5) * 2;
-        autoColorLoop();
       } else {
         container.style.background = RAINBOW_BG;
       }
     });
 
-    function autoColorLoop() {
-      if (!isAutoMoving) return;
-      classColors[currentClass] = randomHexColor();
-      updateCharacter();
-      setTimeout(autoColorLoop, 1500);
-    }
-
     autoClassBtn.addEventListener('click', () => {
       isAutoClassChanging = !isAutoClassChanging;
-      autoClassBtn.textContent = isAutoClassChanging ? '⏹️ 停止切換' : '🎲 隨機職業';
+      autoClassBtn.textContent = isAutoClassChanging ? '⏹️ 停止切換' : '🎲 切換職業';
       if (isAutoClassChanging) { hideTouchHint(); autoChangeClass(); }
     });
 
@@ -628,7 +620,7 @@
       container.style.background = RAINBOW_BG;
       container.style.cursor = CRAYON_CURSOR;
       autoMoveBtn.textContent = '🏃 開始跑酷';
-      autoClassBtn.textContent = '🎲 隨機職業';
+      autoClassBtn.textContent = '🎲 切換職業';
       character.classList.remove('dragging');
       classColors = { archer: '#228B22', mage: '#4169E1', swordsman: '#DC143C', assassin: '#9370DB' };
       currentClass = 'archer';
