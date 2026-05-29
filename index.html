@@ -556,13 +556,21 @@
       updatePosition();
     }
 
+    const RAINBOW_BG = `linear-gradient(to right,
+      hsl(0,80%,35%), hsl(45,80%,35%), hsl(90,80%,35%),
+      hsl(135,80%,35%), hsl(180,80%,35%), hsl(225,80%,35%),
+      hsl(270,80%,35%), hsl(315,80%,35%), hsl(360,80%,35%))`;
+
     autoMoveBtn.addEventListener('click', () => {
       isAutoMoving = !isAutoMoving;
       autoMoveBtn.textContent = isAutoMoving ? '⏸️ 停止跑酷' : '🏃 開始跑酷';
       if (isAutoMoving) {
+        container.style.background = '#000000';
         autoMoveDirection.x = Math.random() > 0.5 ? 1 : -1;
         autoMoveDirection.y = (Math.random() - 0.5) * 2;
         autoColorLoop();
+      } else {
+        container.style.background = RAINBOW_BG;
       }
     });
 
@@ -600,6 +608,7 @@
       isAutoMoving = false;
       isAutoClassChanging = false;
       isDragging = false;
+      container.style.background = RAINBOW_BG;
       autoMoveBtn.textContent = '🏃 開始跑酷';
       autoClassBtn.textContent = '🎲 隨機職業';
       character.classList.remove('dragging');
