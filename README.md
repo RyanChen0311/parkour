@@ -34,6 +34,7 @@
 ## 🛠️ 技術細節
 
 - 純 HTML5 + CSS3 + Vanilla JavaScript（無框架、無依賴）
+- 檔案結構：`index.html`（結構）、`style.css`（樣式）、`game.js`（邏輯）
 - `requestAnimationFrame` 動畫迴圈
 - `touchstart` / `touchmove` / `mousedown` / `mousemove` 統一事件處理
 - `passive: false` 允許 `preventDefault()` 防止系統捲動干擾
@@ -122,6 +123,18 @@ GitHub Actions CI 在每次 push / PR 時自動執行測試。
 | 提示詞被角色遮住 | `.touch-hint { top: 25% }` 上移至遊戲框上方四分之一 |
 
 ---
+
+### 第六階段：程式碼品質重構
+
+| 問題 | 修復方式 |
+|------|---------|
+| `CRAYON_CURSOR` TDZ bug | 常數宣告移至所有函式之前，確保初始化順序正確 |
+| `colorPicker` 死程式碼 | 移除未對應任何 DOM 元素的 `getElementById` |
+| `window.innerWidth <= 480` 散落 4 處 | 統一改呼叫 `getCharacterSize(window.innerWidth)` |
+| `touchHint` 多餘 null guard | 移除不必要的防禦性檢查（element 永遠存在） |
+| 未使用的 CSS keyframes | 刪除 `fadeInDown`、`fadeInUp`、`fadeIn`、`shimmer` |
+| 單一 700 行 HTML | 拆分為 `index.html` + `style.css` + `game.js` |
+| 程式碼無分層 | 加入 `// --- Constants ---`、`// --- State ---` 等區塊註解 |
 
 ### 第五階段：情境游標
 

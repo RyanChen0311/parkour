@@ -1,0 +1,211 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #ffffff;
+  color: #1a1a2e;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  margin: 0;
+  min-height: 100vh;
+  overflow-x: hidden;
+  gap: 16px;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.header {
+  text-align: center;
+}
+
+.title {
+  font-size: 2rem;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+}
+
+select, button {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 8px;
+  background: #1a1a2e;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 120px;
+  height: 40px;
+  background: #1a1a2e;
+  border-radius: 8px;
+  padding: 0 12px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+input[type="range"]:hover {
+  background: #2d2d5e;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 4px;
+  background: rgba(255,255,255,0.4);
+  border-radius: 2px;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: white;
+  margin-top: -6px;
+  cursor: pointer;
+}
+
+input[type="range"]::-moz-range-track {
+  height: 4px;
+  background: rgba(255,255,255,0.4);
+  border-radius: 2px;
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: white;
+  border: none;
+  cursor: pointer;
+}
+
+select:hover, button:hover {
+  background: #2d2d5e;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+#character-container {
+  position: relative;
+  width: 700px;
+  height: 450px;
+  border: 3px solid rgba(0,0,0,0.15);
+  border-radius: 15px;
+  overflow: hidden;
+  background: linear-gradient(to right,
+    hsl(0,80%,35%), hsl(45,80%,35%), hsl(90,80%,35%),
+    hsl(135,80%,35%), hsl(180,80%,35%), hsl(225,80%,35%),
+    hsl(270,80%,35%), hsl(315,80%,35%), hsl(360,80%,35%)
+  );
+  box-shadow: 0 0 30px rgba(0,0,0,0.5);
+  backdrop-filter: blur(10px);
+  touch-action: none;
+}
+
+.character, .afterimage {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+  user-select: none;
+  pointer-events: none;
+}
+
+.character {
+  z-index: 10;
+  box-shadow: 0 0 20px rgba(255,255,255,0.4);
+  border: 2px solid rgba(255,255,255,0.3);
+  transition: transform 0.1s ease-out;
+}
+
+.character.dragging {
+  transform: scale(1.1);
+  box-shadow: 0 0 30px rgba(255,255,255,0.6);
+}
+
+.afterimage {
+  opacity: 0.6;
+  transition: opacity 0.8s ease-out;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.touch-hint {
+  position: absolute;
+  top: 25%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(255,255,255,0.1);
+  padding: 15px 25px;
+  border-radius: 25px;
+  font-size: 14px;
+  opacity: 0.7;
+  pointer-events: none;
+  animation: pulse 2s infinite;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.2);
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.7; transform: translate(-50%, -50%) scale(1); }
+  50%       { opacity: 0.9; transform: translate(-50%, -50%) scale(1.05); }
+}
+
+@media (max-width: 768px) {
+  .title { font-size: 1.5rem; }
+  .controls { flex-direction: column; align-items: stretch; }
+  .control-group { justify-content: center; }
+  #character-container {
+    width: 90vw;
+    max-width: 500px;
+    height: 300px;
+  }
+  .touch-hint {
+    font-size: 12px;
+    padding: 12px 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  body { padding: 10px; gap: 12px; }
+  .title { font-size: 1.2rem; }
+  select, button { padding: 8px 12px; }
+  #character-container { height: 250px; }
+  .character, .afterimage {
+    width: 50px;
+    height: 50px;
+    font-size: 25px;
+  }
+  .touch-hint {
+    font-size: 11px;
+    padding: 10px 15px;
+  }
+}
